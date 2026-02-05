@@ -15,6 +15,9 @@ def main():
         except Exception as e:
             print(f"Error: {e}")
             exit(1)
+    elif len(sys.argv) > 2:
+        print("Too many arguments")
+        exit(1)
     else:
         equation = sys.argv[1]
         # resolver(equation)
