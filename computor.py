@@ -8,8 +8,36 @@ equation = ""
 def discriminant() -> int:
     return 0 #or -1 or 1
 
-def reducer() -> str:
-    return "reduced"
+def reducer():
+    global equation
+
+    left, right = equation.split("=")
+    pattern = r'([+-]?\s*\d*\.?\d+)\s*\*\s*X\^(\d+)'
+
+    coeffs = {}
+    for coef, power in re.findall(pattern, left):
+        coef = float(coef.replace(" ", ""))
+        power = int(power)
+        coeffs[power] = coeffs.get(power, 0) + coef
+    for coef, power in re.findall(pattern, right):
+        coef = float(coef.replace(" ", ""))
+        power = int(power)
+        coeffs[power] = coeffs.get(power, 0) - coef
+    if not coeffs:
+        return "0 * X^0 = 0"
+
+    max_degree = max(coeffs.keys())
+    result = []
+    for power in range(max_degree + 1):
+        coef = coeffs.get(power, 0)
+        sign = "+" if coef >= 0 else "-"
+        coef_abs = abs(coef)
+        term = f"{coef_abs:g} * X^{power}"
+        if result:
+            result.append(f" {sign} {term}")
+        else:
+            result.append(term if sign == "+" else f"-{term}")
+    return "".join(result) + " = 0"
 
 def polynomial_degree() -> int:
     global equation
